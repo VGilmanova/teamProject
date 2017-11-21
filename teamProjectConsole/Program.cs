@@ -26,7 +26,7 @@ namespace teamProjectConsole
                     switch (choice)
                     {
                         case 1:
-                            Console.WriteLine(String.Format("Number of active players: {0}", 1));//repo.GetActivePlayers()));
+                            Console.WriteLine(String.Format("Number of active players: {0}", repo.GetActivePlayers()));
                             break;
                         case 2:
                             Console.WriteLine("Goodbye");
