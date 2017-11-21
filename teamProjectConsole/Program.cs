@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TelegrammClient;
+using System.Threading;
 
 namespace teamProjectConsole
 {
@@ -30,6 +31,7 @@ namespace teamProjectConsole
                             break;
                         case 2:
                             Console.WriteLine("Goodbye");
+                            Thread.Sleep(1500);
                             isWorking = false;
                             break;
                         default:
