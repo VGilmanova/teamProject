@@ -17,6 +17,12 @@ namespace DBClasses
             }
         }
 
+        public int GetActivePlayers()
+        {
+            using (Context context = new Context())
+                return context.Games.Count();
+        }
+
         public Answer GetAnswer(int answer_id)
         {
             using (Context context = new Context()) 
