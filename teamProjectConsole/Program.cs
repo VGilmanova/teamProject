@@ -15,6 +15,7 @@ namespace teamProjectConsole
         {
             Repository repo = new Repository();
             Client client = new Client(repo);
+            client.Start();
             Console.WriteLine("Bot is active!");
             Console.WriteLine("Press 1 to get number of active players and 2 to stop working");
             string users = Console.ReadLine();
@@ -31,6 +32,7 @@ namespace teamProjectConsole
                             break;
                         case 2:
                             Console.WriteLine("Goodbye");
+                            client.Stop();
                             Thread.Sleep(1500);
                             isWorking = false;
                             break;

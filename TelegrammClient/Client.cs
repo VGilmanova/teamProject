@@ -4,16 +4,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot;
 
 namespace TelegrammClient
 {
     public class Client
     {
+        private TelegramBotClient client;
         private Repository Repo { get; set; }
 
         public Client(Repository _repo)
         {
             Repo = _repo;
+            string token = Properties.Resources.Token;
+            client = new TelegramBotClient(token);
+        }
+
+        public void Start()
+        {
+            client.StartReceiving();
+        }
+
+        public void Stop()
+        {
+            client.StopReceiving();
+        }
+
+        private void MessageProcesor(object sender, Telegram.Bot.Args.MessageEventArgs e)
+        {
+            switch (e.Message.Type)
+            {
+                case Telegram.Bot.Types.Enums.MessageType.TextMessage:
+                    TextProcessor(e.Message);
+                    break;
+            }
+        }
+
+        private void TextProcessor(Telegram.Bot.Types.Message msg)
+        {
+            if (msg.Text.Substring(0, 1) == "/") //command starts with "/"
+                CommandProcessor(msg, msg.Text.Substring(1));
+            else //answer with string
+            {
+
+            }
+
+        }
+
+        private void CommandProcessor(Telegram.Bot.Types.Message msg, string command)
+        {
+
         }
 
         public void Show(Location location)
