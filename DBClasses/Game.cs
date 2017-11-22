@@ -9,7 +9,7 @@ namespace DBClasses
     public class Game
     {
         public int Id { get; set; }
-        public int ChatId { get; set; }
+        public long ChatId { get; set; }
         public TimeSpan WorkTime { get; set; }
 
         /// <summary>
@@ -17,6 +17,14 @@ namespace DBClasses
         /// </summary>
         public string Log { get; set; } 
 
-        public Location Locaton { get; set; }
+        public Location Location { get; set; }
+
+        public Game(long chatId, Location location)
+        {
+            ChatId = chatId;
+            DateTime now = DateTime.Now;
+            WorkTime = new TimeSpan(now.Hour, now.Minute, now.Second);
+            Location = location;
+        }
     }
 }

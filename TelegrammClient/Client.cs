@@ -53,7 +53,8 @@ namespace TelegrammClient
 
         private void CommandProcessor(Telegram.Bot.Types.Message msg, string command)
         {
-
+            if (command == "start")
+                Repo.AddGame(new Game(msg.Chat.Id, new Location()));
         }
 
         public void Show(Location location)
