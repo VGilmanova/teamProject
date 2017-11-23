@@ -35,13 +35,26 @@ namespace DBClasses
                 return context.Location.First(a => a.Id == location_id);
         }
 
-        public Game GetGame(int game_chat_id)
+        public Game GetGame(long game_chat_id)
         {
             using (Context context = new Context())
-                return context.Games.First(a => a.ChatId == game_chat_id);
+            {
+                Game returngame = new Game();
+                foreach (Game game in context.Games)
+                {
+                    if (game.ChatId == game_chat_id)
+                    {
+                        returngame = context.Games.First(a => a.ChatId == game_chat_id);
+                        return returngame;
+                    }
+                }
+                returngame = new Game(-1); //if not found returns -1
+                return returngame;
+            }
+                
         }
 
-        public void ChangeLocation(int game_chat_id, int new_location_id)
+        public void ChangeLocation(long game_chat_id, int new_location_id)
         {
             using (Context context = new Context())
             {

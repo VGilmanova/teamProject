@@ -17,6 +17,7 @@ namespace teamProjectConsole
             Client client = new Client(repo);
             client.Start();
             Console.WriteLine("Bot is active!");
+            Console.ReadLine();
             Console.WriteLine("Press 1 to get number of active players and 2 to stop working");
             string users = Console.ReadLine();
             int choice = 0;

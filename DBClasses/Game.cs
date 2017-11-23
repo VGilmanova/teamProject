@@ -26,5 +26,14 @@ namespace DBClasses
             WorkTime = new TimeSpan(now.Hour, now.Minute, now.Second);
             Location = location;
         }
+        public Game(int id)
+        {
+            Id = id;
+        }
+
+        public Game()
+        {
+
+        }
     }
 }
