@@ -12,7 +12,11 @@ namespace DBClasses
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public List<Answer> Answers { get; set; }
+        public List<Answer> AnswersToThisLocation { get; set; }
+        public Answer Answer_1 { get; set; }
+        public Answer Answer_2 { get; set; }
+        public Answer Answer_3 { get; set; }
+        public Answer Answer_4 { get; set; }
         public List<Game> Games { get; set; }
     }
 }

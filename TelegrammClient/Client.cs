@@ -33,35 +33,53 @@ namespace TelegrammClient
 
         private void MessageProcessor(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
-                client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
-                switch (e.Message.Type)
-                {
-                    case Telegram.Bot.Types.Enums.MessageType.TextMessage:
-                        TextProcessor(e.Message);
-                        break;
-                    default:
-                        client.SendTextMessageAsync(e.Message.Chat.Id, string.Format("Не понимаю о чем ты, не знаю формата {0}", e.Message.Type));
-                        break;
-                }
+            client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
+            string s = e.Message.Text;
+            switch (e.Message.Type)
+            {
+                case Telegram.Bot.Types.Enums.MessageType.TextMessage:
+                    TextProcessor(e.Message);
+                    break;
+                default:
+                    client.SendTextMessageAsync(e.Message.Chat.Id, string.Format("Не понимаю о чем ты, не знаю формата {0}", e.Message.Type));
+                    break;
+            }
         }
 
         private void TextProcessor(Telegram.Bot.Types.Message msg)
         {
-            if (msg.Text.Substring(0, 1) == "/" || Repo.GetGame(msg.Chat.Id).Id == -1) //command starts with "/"
-                CommandProcessor(msg, msg.Text.Substring(1));
-            else //answer with string
+            if (Repo.GetGame(msg.Chat.Id).Id == -1)
             {
-                Game game = Repo.GetGame(msg.Chat.Id);
+                StartGame(msg);
             }
+            else
+            {
+                if (msg.Text.Substring(0, 1) == "/") //command starts with "/"
+                    CommandProcessor(msg, msg.Text.Substring(1));
+                else //answer with string
+                {
+                    Game game = Repo.GetGame(msg.Chat.Id);
+                }
+            }
+        }
 
+        private void StartGame(Telegram.Bot.Types.Message msg)
+        {
+            Location startlocation = Repo.GetLocation(2);
+            Game newGame = new Game(msg.Chat.Id);
+            newGame.Location = startlocation;
+            Repo.AddGame(newGame);
+            client.SendTextMessageAsync(msg.Chat.Id, string.Format("Игра началась! \n Активных сейчас: {0}", Repo.GetActivePlayers()));
+            Game game = Repo.GetGame(msg.Chat.Id);
         }
 
         private void CommandProcessor(Telegram.Bot.Types.Message msg, string command)
         {
-            if (command == "start" || Repo.GetGame(msg.Chat.Id).Id == -1)
+            if (command == "start" && Repo.GetGame(msg.Chat.Id).Id == -1)
             {
-                Repo.AddGame(new Game(msg.Chat.Id, Repo.GetLocation(1))); //Location with id = 1 - location from the game starts
-                client.SendTextMessageAsync(msg.Chat.Id, "Игра началась!");
+
+                //client.SendTextMessageAsync(msg.Chat.Id, "desc =" + game.Location.Description );
+                //Show(msg, Repo.GetGame(msg.Chat.Id).Location);
             }
         }
 
@@ -81,6 +99,8 @@ namespace TelegrammClient
             Show(msg, Repo.GetLocation(new_location_id));
             //done1
         }
+
+        
 
     }
 }

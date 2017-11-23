@@ -19,12 +19,11 @@ namespace DBClasses
 
         public Location Location { get; set; }
 
-        public Game(long chatId, Location location)
+        public Game(long chatId)
         {
             ChatId = chatId;
             DateTime now = DateTime.Now;
             WorkTime = new TimeSpan(now.Hour, now.Minute, now.Second);
-            Location = location;
         }
         public Game(int id)
         {

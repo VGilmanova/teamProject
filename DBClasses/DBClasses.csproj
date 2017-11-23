@@ -76,6 +76,14 @@
     <Compile Include="Migrations\201711221126433_ChangedGameClass.Designer.cs">
       <DependentUpon>201711221126433_ChangedGameClass.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711231828232_location-schema.cs" />
+    <Compile Include="Migrations\201711231828232_location-schema.Designer.cs">
+      <DependentUpon>201711231828232_location-schema.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711231831462_location-schema1.cs" />
+    <Compile Include="Migrations\201711231831462_location-schema1.Designer.cs">
+      <DependentUpon>201711231831462_location-schema1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +98,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711221126433_ChangedGameClass.resx">
       <DependentUpon>201711221126433_ChangedGameClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711231828232_location-schema.resx">
+      <DependentUpon>201711231828232_location-schema.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711231831462_location-schema1.resx">
+      <DependentUpon>201711231831462_location-schema1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

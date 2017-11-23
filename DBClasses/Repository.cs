@@ -31,8 +31,13 @@ namespace DBClasses
 
         public Location GetLocation(int location_id)
         {
+            Location location = new Location();
             using (Context context = new Context())
-                return context.Location.First(a => a.Id == location_id);
+            {
+                List<Location> locations = context.Location.ToList();
+                location = context.Location.First(a => a.Id == location_id);
+            }
+            return location;
         }
 
         public Game GetGame(long game_chat_id)
