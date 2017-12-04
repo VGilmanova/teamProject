@@ -48,7 +48,7 @@ namespace teamProjectConsole
                     Console.WriteLine("Press 1 to get number of active players and 2 to stop working");
                     users = Console.ReadLine();
                 }
-            }
+            } 
         }
     }
 }
