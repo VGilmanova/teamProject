@@ -68,21 +68,9 @@
     <Compile Include="Context.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Location.cs" />
-    <Compile Include="Migrations\201711211538486_Initial.cs" />
-    <Compile Include="Migrations\201711211538486_Initial.Designer.cs">
-      <DependentUpon>201711211538486_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711221126433_ChangedGameClass.cs" />
-    <Compile Include="Migrations\201711221126433_ChangedGameClass.Designer.cs">
-      <DependentUpon>201711221126433_ChangedGameClass.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711231828232_location-schema.cs" />
-    <Compile Include="Migrations\201711231828232_location-schema.Designer.cs">
-      <DependentUpon>201711231828232_location-schema.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201711231831462_location-schema1.cs" />
-    <Compile Include="Migrations\201711231831462_location-schema1.Designer.cs">
-      <DependentUpon>201711231831462_location-schema1.cs</DependentUpon>
+    <Compile Include="Migrations\201712041718230_AddedAnswersFrom.cs" />
+    <Compile Include="Migrations\201712041718230_AddedAnswersFrom.Designer.cs">
+      <DependentUpon>201712041718230_AddedAnswersFrom.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repository.cs" />
@@ -93,17 +81,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201711211538486_Initial.resx">
-      <DependentUpon>201711211538486_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711221126433_ChangedGameClass.resx">
-      <DependentUpon>201711221126433_ChangedGameClass.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711231828232_location-schema.resx">
-      <DependentUpon>201711231828232_location-schema.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201711231831462_location-schema1.resx">
-      <DependentUpon>201711231831462_location-schema1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201712041718230_AddedAnswersFrom.resx">
+      <DependentUpon>201712041718230_AddedAnswersFrom.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

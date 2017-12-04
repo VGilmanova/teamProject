@@ -17,8 +17,6 @@ namespace DBClasses
         /// </summary>
         public string Log { get; set; } 
 
-        public Location Location { get; set; }
-
         public Game(long chatId)
         {
             ChatId = chatId;

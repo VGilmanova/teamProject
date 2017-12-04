@@ -7,13 +7,13 @@ namespace DBClasses.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class locationschema1 : IMigrationMetadata
+    public sealed partial class AddedAnswersFrom : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(locationschema1));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddedAnswersFrom));
         
         string IMigrationMetadata.Id
         {
-            get { return "201711231831462_location-schema1"; }
+            get { return "201712041718230_AddedAnswersFrom"; }
         }
         
         string IMigrationMetadata.Source

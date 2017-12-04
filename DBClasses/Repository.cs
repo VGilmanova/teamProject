@@ -62,7 +62,7 @@ namespace DBClasses
         public void ChangeLocation(long game_chat_id, int new_location_id)
         {
             using (Context context = new Context())
-            {
+            {/*
                 Location prev_location = (context.Games.First(a => a.ChatId == game_chat_id)).Location;
                 prev_location.Games.Remove(context.Games.First(a => a.ChatId == game_chat_id));
                 context.Games.First(a => a.ChatId== game_chat_id).Location = context.Location.First(a => a.Id == new_location_id);
@@ -71,7 +71,7 @@ namespace DBClasses
                 context.Entry(context.Games.First(a => a.ChatId == game_chat_id)).State = System.Data.Entity.EntityState.Modified;
                 context.Entry(prev_location).State = System.Data.Entity.EntityState.Modified;
                 context.Entry(context.Location.First(a => a.Id == new_location_id)).State = System.Data.Entity.EntityState.Modified;
-                context.SaveChanges();
+                context.SaveChanges();*/
             }
         }
     }

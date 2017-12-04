@@ -67,7 +67,7 @@ namespace TelegrammClient
         {
             Location startlocation = Repo.GetLocation(2);
             Game newGame = new Game(msg.Chat.Id);
-            newGame.Location = startlocation;
+            //newGame.Location = startlocation;
             Repo.AddGame(newGame);
             client.SendTextMessageAsync(msg.Chat.Id, string.Format("Игра началась! \n Активных сейчас: {0}", Repo.GetActivePlayers()));
             Game game = Repo.GetGame(msg.Chat.Id);
@@ -94,9 +94,9 @@ namespace TelegrammClient
         {
             string postDescription = Repo.GetAnswer(buttonId).PostDescrption;
             client.SendTextMessageAsync(msg.Chat.Id, postDescription); //send postDescription
-            int new_location_id = Repo.GetLocation(Repo.GetAnswer(buttonId).ToLocation.Id).Id;
-            Repo.ChangeLocation(msg.Chat.Id, new_location_id);
-            Show(msg, Repo.GetLocation(new_location_id));
+            //int new_location_id = Repo.GetLocation(Repo.GetAnswer(buttonId).ToLocation.Id).Id;
+            //Repo.ChangeLocation(msg.Chat.Id, new_location_id);
+            //Show(msg, Repo.GetLocation(new_location_id));
             //done1
         }
 
