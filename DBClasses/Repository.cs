@@ -49,6 +49,19 @@ namespace DBClasses
             return location;
         }
 
+        public Location GetLocation(long game_chat_id)
+        {
+            Location location = new Location();
+            using (Context context = new Context())
+            {
+                Game game = GetGame(game_chat_id);
+                List<Log> log = JsonConvert.DeserializeObject<List<Log>>(game.Log);
+                location = GetLocation(log[log.Count() - 1].Location);
+            }
+            return location;
+        }
+
+
         public Game GetGame(long game_chat_id)
         {
             using (Context context = new Context())
@@ -68,13 +81,30 @@ namespace DBClasses
                 
         }
 
+        public Location StartGame(long game_chat_id)
+        {
+            using (Context context = new Context())
+            {
+                var new_game = new Game(game_chat_id); // игра с таким то chat_id
+                var start_location = context.Location.First(a => a.Id == 1);//у первой локации id = 1
+                List<Log> new_log = new List<Log>();
+                Log lg = new Log(); //написать конструктор чтобы ID сделать
+                lg.Location = start_location.Id;
+                new_log.Add(lg);
+                string jsoned_log = JsonConvert.SerializeObject(new_log);
+                new_game.Log = jsoned_log;
+                AddGame(new_game);
+                return start_location;
+            }
+        }
+
         public void ChangedLocation(long game_chat_id, int new_location_id)
         {
             using (Context context = new Context())
             {
                 var game = context.Games.First(a => a.ChatId == game_chat_id);
                 List<Log> log = JsonConvert.DeserializeObject<List<Log>>(game.Log);
-                log.Add(new Log() { LogId = log.Count(), Location = new_location_id, Answer = 0 }); // 0 - нет ответа, дефолтный
+                log.Add(new Log() { LogId = log.Count(), Location = new_location_id, Answer = -1 }); // 0 - нет ответа, дефолтный
             }
         }
 

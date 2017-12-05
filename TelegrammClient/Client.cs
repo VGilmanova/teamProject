@@ -50,36 +50,45 @@ namespace TelegrammClient
         {
             if (Repo.GetGame(msg.Chat.Id).Id == -1)
             {
-                StartGame(msg);
+                CommandProcessor(msg, "start");
             }
             else
             {
                 if (msg.Text.Substring(0, 1) == "/") //command starts with "/"
                     CommandProcessor(msg, msg.Text.Substring(1));
-                else //answer with string
+                else //normal game
                 {
-                    Game game = Repo.GetGame(msg.Chat.Id);
+                    //это по идее можно перенести в репозиторий
+                    int users_answer;
+                    Game this_game = Repo.GetGame(msg.Chat.Id);
+                    Location current_location = Repo.GetLocation(msg.Chat.Id);
+                    var answers = current_location.AnswersFromLocation;
+                    List<int> ints = new List<int>();
+                    foreach (Answer answer in answers)
+                        ints.Add(answer.Id);
+                    if (int.TryParse(msg.Text, out users_answer))
+                    {
+                        Repo.AnswerRecieved(msg.Chat.Id, users_answer);
+                    }
+                    else
+                    {
+                        if (ints.Exists(a => a == users_answer))
+                        {
+                            client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, возможный номер ответа");
+                            return;
+                        }
+                        client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, целочисленный номер ответа");
+                    }
                 }
             }
-        }
-
-        private void StartGame(Telegram.Bot.Types.Message msg)
-        {
-            Location startlocation = Repo.GetLocation(2);
-            Game newGame = new Game(msg.Chat.Id);
-            //newGame.Location = startlocation;
-            Repo.AddGame(newGame);
-            client.SendTextMessageAsync(msg.Chat.Id, string.Format("Игра началась! \n Активных сейчас: {0}", Repo.GetActivePlayers()));
-            Game game = Repo.GetGame(msg.Chat.Id);
         }
 
         private void CommandProcessor(Telegram.Bot.Types.Message msg, string command)
         {
             if (command == "start" && Repo.GetGame(msg.Chat.Id).Id == -1)
             {
-
-                //client.SendTextMessageAsync(msg.Chat.Id, "desc =" + game.Location.Description );
-                //Show(msg, Repo.GetGame(msg.Chat.Id).Location);
+                Location start_loc = Repo.StartGame(msg.Chat.Id);
+                Show(msg,start_loc);
             }
         }
 
