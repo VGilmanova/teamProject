@@ -34,7 +34,6 @@ namespace TelegrammClient
         private void MessageProcessor(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
-            string s = e.Message.Text;
             switch (e.Message.Type)
             {
                 case Telegram.Bot.Types.Enums.MessageType.TextMessage:
@@ -67,9 +66,7 @@ namespace TelegrammClient
                     foreach (Answer answer in answers)
                         ints.Add(answer.Id);
                     if (int.TryParse(msg.Text, out users_answer))
-                    {
-                        Repo.AnswerRecieved(msg.Chat.Id, users_answer);
-                    }
+                        Answered(msg, users_answer);
                     else
                     {
                         if (ints.Exists(a => a == users_answer))
@@ -101,8 +98,8 @@ namespace TelegrammClient
 
         public void Answered(Telegram.Bot.Types.Message msg, int buttonId)
         {
-            string postDescription = Repo.GetAnswer(buttonId).PostDescrption;
-            client.SendTextMessageAsync(msg.Chat.Id, postDescription); //send postDescription
+            string new_location_desc = Repo.AnswerRecieved(msg.Chat.Id, buttonId);
+            client.SendTextMessageAsync(msg.Chat.Id, new_location_desc); //send postDescription
             //int new_location_id = Repo.GetLocation(Repo.GetAnswer(buttonId).ToLocation.Id).Id;
             //Repo.ChangeLocation(msg.Chat.Id, new_location_id);
             //Show(msg, Repo.GetLocation(new_location_id));

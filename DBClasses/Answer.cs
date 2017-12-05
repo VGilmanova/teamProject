@@ -10,7 +10,7 @@ namespace DBClasses
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public string PostDescrption { get; set; }
+        public string PostDescrption { get; set; }// here int that leads to next location
 
     }
 }
