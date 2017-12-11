@@ -119,7 +119,10 @@ namespace DBClasses
                 LogNumber += 1;
                 log.Add(new Log(LogNumber) {Location = new_location_id, Answer = -1 }); // -1 - нет ответа, дефолтный
                 game.Log = JsonConvert.SerializeObject(log);
-                context.Entry(game).State = System.Data.Entity.EntityState.Modified;
+                if (new_location_id != 1000) // 1000 is id of last location (CHANGE)
+                    context.Entry(game).State = System.Data.Entity.EntityState.Modified;
+                else
+                    context.Entry(game).State = System.Data.Entity.EntityState.Deleted; //deletes game from database 
                 context.SaveChanges();
                 return context.Location.First(a => a.Id == new_location_id).Description;
             }
@@ -139,6 +142,26 @@ namespace DBClasses
                 Answer chosed_answer = GetAnswer(new_answer_id);
                 string post_description = ChangedLocation(game_chat_id,int.Parse(chosed_answer.PostDescrption));
                 return post_description;
+            }
+        }
+
+        public int CheckAnswer(long game_chat_id, string message_text)
+        {
+            using (Context context = new Context())
+            {
+                int users_answer;
+                Game this_game = GetGame(game_chat_id);
+                Location current_location = GetLocation(game_chat_id);
+                var answers = current_location.AnswersFromLocation;
+                List<int> ints = new List<int>();
+                foreach (Answer answer in answers)
+                    ints.Add(answer.Id);
+                if (!int.TryParse(message_text, out users_answer))
+                    return -1;
+                else
+                    if (ints.Exists(a => a == users_answer))
+                        return users_answer;
+                return -1;
             }
         }
     }

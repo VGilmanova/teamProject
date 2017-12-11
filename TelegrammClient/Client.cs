@@ -31,6 +31,11 @@ namespace TelegrammClient
             client.StopReceiving();
         }
 
+        /// <summary>
+        /// Method for handling a message from user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MessageProcessor(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
             client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
@@ -40,13 +45,19 @@ namespace TelegrammClient
                     TextProcessor(e.Message);
                     break;
                 default:
+                    //if type of message would be not text
                     client.SendTextMessageAsync(e.Message.Chat.Id, string.Format("Не понимаю о чем ты, не знаю формата {0}", e.Message.Type));
                     break;
             }
         }
 
+        /// <summary>
+        /// Method for handling only text messages
+        /// </summary>
+        /// <param name="msg"></param>
         private void TextProcessor(Telegram.Bot.Types.Message msg)
         {
+            //if there is no such a game in the database
             if (Repo.GetGame(msg.Chat.Id).Id == -1)
             {
                 CommandProcessor(msg, "start");
@@ -57,52 +68,30 @@ namespace TelegrammClient
                     CommandProcessor(msg, msg.Text.Substring(1));
                 else //normal game
                 {
-                    //это по идее можно перенести в репозиторий
-                    int users_answer;
-                    Game this_game = Repo.GetGame(msg.Chat.Id);
-                    Location current_location = Repo.GetLocation(msg.Chat.Id);
-                    var answers = current_location.AnswersFromLocation;
-                    List<int> ints = new List<int>();
-                    foreach (Answer answer in answers)
-                        ints.Add(answer.Id);
-                    if (int.TryParse(msg.Text, out users_answer))
-                        Answered(msg, users_answer);
-                    else
-                    {
-                        if (ints.Exists(a => a == users_answer))
+                    int pushed_button = Repo.CheckAnswer(msg.Chat.Id, msg.Text);                 
+                        if (pushed_button != -1)
                         {
-                            client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, возможный номер ответа");
+                            Answered(msg, pushed_button);
                             return;
                         }
-                        client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, целочисленный номер ответа");
+                        client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, возможный номер ответа");
                     }
                 }
-            }
         }
 
         private void CommandProcessor(Telegram.Bot.Types.Message msg, string command)
         {
-            if (command == "start" && Repo.GetGame(msg.Chat.Id).Id == -1)
+            if (command == "start" && Repo.GetGame(msg.Chat.Id).Id == -1) //start the game
             {
                 Location start_loc = Repo.StartGame(msg.Chat.Id);
-                Show(msg,start_loc);
+                client.SendTextMessageAsync(msg.Chat.Id,start_loc.Description);
             }
-        }
-
-        public void Show(Telegram.Bot.Types.Message msg, Location location)
-        {
-            client.SendTextMessageAsync(msg.Chat.Id, location.Description); //send description
-            //send buttons
-            //add to this game's log new key - location
         }
 
         public void Answered(Telegram.Bot.Types.Message msg, int buttonId)
         {
             string new_location_desc = Repo.AnswerRecieved(msg.Chat.Id, buttonId);
             client.SendTextMessageAsync(msg.Chat.Id, new_location_desc); //send postDescription
-            //int new_location_id = Repo.GetLocation(Repo.GetAnswer(buttonId).ToLocation.Id).Id;
-            //Repo.ChangeLocation(msg.Chat.Id, new_location_id);
-            //Show(msg, Repo.GetLocation(new_location_id));
             //done1
         }
 
