@@ -133,14 +133,23 @@ namespace DBClasses
         {
             using (Context context = new Context())
             {
+                string post_description;
                 var game = context.Games.First(a => a.ChatId == game_chat_id);
                 List<Log> log = JsonConvert.DeserializeObject<List<Log>>(game.Log);
                 log[log.Count() - 1].Answer = new_answer_id;//последняя запись в логе
                 game.Log = JsonConvert.SerializeObject(log);
-                context.Entry(game).State = System.Data.Entity.EntityState.Modified;
+                if (new_answer_id != 102)
+                { 
+                    context.Entry(game).State = System.Data.Entity.EntityState.Modified;
+                    Answer chosed_answer = GetAnswer(new_answer_id);
+                    post_description = ChangedLocation(game_chat_id, int.Parse(chosed_answer.PostDescrption));
+                }
+                else
+                {
+                    post_description = "Thanks for playing";
+                    context.Entry(game).State = System.Data.Entity.EntityState.Deleted;
+                }
                 context.SaveChanges();
-                Answer chosed_answer = GetAnswer(new_answer_id);
-                string post_description = ChangedLocation(game_chat_id,int.Parse(chosed_answer.PostDescrption));
                 return post_description;
             }
         }
