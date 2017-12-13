@@ -72,6 +72,30 @@
     <Compile Include="Migrations\201712041718230_AddedAnswersFrom.Designer.cs">
       <DependentUpon>201712041718230_AddedAnswersFrom.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712130915136_Fix.cs" />
+    <Compile Include="Migrations\201712130915136_Fix.Designer.cs">
+      <DependentUpon>201712130915136_Fix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131219167_Kostil.cs" />
+    <Compile Include="Migrations\201712131219167_Kostil.Designer.cs">
+      <DependentUpon>201712131219167_Kostil.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131226315_Newone.cs" />
+    <Compile Include="Migrations\201712131226315_Newone.Designer.cs">
+      <DependentUpon>201712131226315_Newone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131234325_WhyItDoesntWork.cs" />
+    <Compile Include="Migrations\201712131234325_WhyItDoesntWork.Designer.cs">
+      <DependentUpon>201712131234325_WhyItDoesntWork.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131248477_NowItShouldWork.cs" />
+    <Compile Include="Migrations\201712131248477_NowItShouldWork.Designer.cs">
+      <DependentUpon>201712131248477_NowItShouldWork.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712131314215_Clear.cs" />
+    <Compile Include="Migrations\201712131314215_Clear.Designer.cs">
+      <DependentUpon>201712131314215_Clear.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +107,24 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201712041718230_AddedAnswersFrom.resx">
       <DependentUpon>201712041718230_AddedAnswersFrom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712130915136_Fix.resx">
+      <DependentUpon>201712130915136_Fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131219167_Kostil.resx">
+      <DependentUpon>201712131219167_Kostil.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131226315_Newone.resx">
+      <DependentUpon>201712131226315_Newone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131234325_WhyItDoesntWork.resx">
+      <DependentUpon>201712131234325_WhyItDoesntWork.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131248477_NowItShouldWork.resx">
+      <DependentUpon>201712131248477_NowItShouldWork.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712131314215_Clear.resx">
+      <DependentUpon>201712131314215_Clear.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 
+
 namespace TelegrammClient
 {
     public class Client
@@ -38,7 +39,7 @@ namespace TelegrammClient
         /// <param name="e"></param>
         private void MessageProcessor(object sender, Telegram.Bot.Args.MessageEventArgs e)
         {
-            client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
+            //client.SendTextMessageAsync(e.Message.Chat.Id, "Получил сообщение");
             switch (e.Message.Type)
             {
                 case Telegram.Bot.Types.Enums.MessageType.TextMessage:
@@ -68,7 +69,8 @@ namespace TelegrammClient
                     CommandProcessor(msg, msg.Text.Substring(1));
                 else //normal game
                 {
-                    int pushed_button = Repo.CheckAnswer(msg.Chat.Id, msg.Text);                 
+                    int pushed_button = int.Parse(msg.Text.Split('.')[0]);
+                    pushed_button = Repo.CheckAnswer(msg.Chat.Id, msg.Text.Split('.')[0]);                 
                         if (pushed_button != -1)
                         {
                             Answered(msg, pushed_button);
@@ -84,18 +86,51 @@ namespace TelegrammClient
             if (command == "start" && Repo.GetGame(msg.Chat.Id).Id == -1) //start the game
             {
                 Location start_loc = Repo.StartGame(msg.Chat.Id);
-                client.SendTextMessageAsync(msg.Chat.Id,start_loc.Description);
+                Telegram.Bot.Types.ReplyMarkups.IReplyMarkup returned_markup = Buttons(msg);
+                client.SendTextMessageAsync(msg.Chat.Id, start_loc.Description);
+                client.SendTextMessageAsync(msg.Chat.Id, "What do you choose?", replyMarkup: returned_markup);
             }
         }
 
         public void Answered(Telegram.Bot.Types.Message msg, int buttonId)
         {
-            string new_location_desc = Repo.AnswerRecieved(msg.Chat.Id, buttonId);
+            List<string> buttons = new List<string>();
+            string new_location_desc = Repo.AnswerRecieved(msg.Chat.Id, buttonId, out buttons);
+            Telegram.Bot.Types.ReplyMarkups.IReplyMarkup returned_markup = Buttons(msg,buttons);
             client.SendTextMessageAsync(msg.Chat.Id, new_location_desc); //send postDescription
-            //done1
+            client.SendTextMessageAsync(msg.Chat.Id, "What do you choose?", replyMarkup: returned_markup);
+
         }
 
-        
+        public Telegram.Bot.Types.ReplyMarkups.IReplyMarkup Buttons(Telegram.Bot.Types.Message msg, List<string> buttons)
+        {
+            List<string> buttons_descs = buttons;
+            int length = buttons_descs.Count;
+            List<Telegram.Bot.Types.KeyboardButton> keys = new List<Telegram.Bot.Types.KeyboardButton>();
+            foreach (string buttons_desc in buttons_descs) //like '1. Description...'
+            {
+                Telegram.Bot.Types.KeyboardButton b = new Telegram.Bot.Types.KeyboardButton(buttons_desc);
+                keys.Add(b);
+            }
+            var markup = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(keys.ToArray(), true, true);
+            return markup;
+        }
+
+        public Telegram.Bot.Types.ReplyMarkups.IReplyMarkup Buttons(Telegram.Bot.Types.Message msg)
+        {
+            List<string> buttons_descs = Repo.ShowButtons(msg.Chat.Id);
+            int length = buttons_descs.Count;
+            List<Telegram.Bot.Types.KeyboardButton> keys = new List<Telegram.Bot.Types.KeyboardButton>();
+            foreach (string buttons_desc in buttons_descs) //like '1. Description...'
+            {
+                Telegram.Bot.Types.KeyboardButton b = new Telegram.Bot.Types.KeyboardButton(buttons_desc);
+                keys.Add(b);
+            }
+            var markup = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(keys.ToArray(), true, true);
+            return markup;
+        }
+
+
 
     }
 }
