@@ -47,7 +47,7 @@ namespace TelegrammClient
                     break;
                 default:
                     //if type of message would be not text
-                    client.SendTextMessageAsync(e.Message.Chat.Id, string.Format("Не понимаю о чем ты, не знаю формата {0}", e.Message.Type));
+                    client.SendTextMessageAsync(e.Message.Chat.Id, string.Format("Don't understand you, I don't know {0}", e.Message.Type));
                     break;
             }
         }
@@ -76,7 +76,7 @@ namespace TelegrammClient
                             Answered(msg, pushed_button);
                             return;
                         }
-                        client.SendTextMessageAsync(msg.Chat.Id, "Пришлите, пожалуйста, возможный номер ответа");
+                        client.SendTextMessageAsync(msg.Chat.Id, "Please, send valid variant");
                     }
                 }
         }
@@ -88,7 +88,7 @@ namespace TelegrammClient
                 Location start_loc = Repo.StartGame(msg.Chat.Id);
                 Telegram.Bot.Types.ReplyMarkups.IReplyMarkup returned_markup = Buttons(msg);
                 client.SendTextMessageAsync(msg.Chat.Id, start_loc.Description);
-                client.SendTextMessageAsync(msg.Chat.Id, "What do you choose?", replyMarkup: returned_markup);
+                //client.SendTextMessageAsync(msg.Chat.Id, "What do you choose?", replyMarkup: returned_markup);
             }
         }
 
