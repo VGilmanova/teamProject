@@ -69,9 +69,13 @@ namespace TelegrammClient
                     CommandProcessor(msg, msg.Text.Substring(1));
                 else //normal game
                 {
-                    int pushed_button = int.Parse(msg.Text.Split('.')[0]);
-                    pushed_button = Repo.CheckAnswer(msg.Chat.Id, msg.Text.Split('.')[0]);                 
-                        if (pushed_button != -1)
+                    int pushed_button;
+                    if (!int.TryParse(msg.Text.Split('.')[0], out pushed_button))
+                    {
+                        client.SendTextMessageAsync(msg.Chat.Id, "Please, send valid variant");
+                        return;
+                    } //eto norm cod
+                    if (pushed_button != -1)
                         {
                             Answered(msg, pushed_button);
                             return;
