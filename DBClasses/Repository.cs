@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks; //kommit
+using System.Threading.Tasks;
 
 namespace DBClasses
 {
@@ -11,7 +11,8 @@ namespace DBClasses
     {
         public int LogNumber;
 
-        private class Log
+        private class Log //У каждой игры - список логов, то есть история игры: куда ходил, что выбирал
+                          //можно использовать позже для результатах, основанных на предыдущем выборе
         {
             public int LogId { get; set; }
             public int Location_Id { get; set; }
@@ -23,7 +24,7 @@ namespace DBClasses
             }
         }
 
-        public Repository()
+        public Repository() //конструктор репозитория, начинает цепочку id дл логов
         {
             LogNumber = 0;
         }
@@ -45,7 +46,7 @@ namespace DBClasses
 
         public Answer GetAnswer(int answer_id)
         {
-            using (Context context = new Context()) 
+            using (Context context = new Context())
                 return context.Answers.First(a => a.Id == answer_id);
         }
 
@@ -69,7 +70,7 @@ namespace DBClasses
         }
 
 
-        public Game GetGame(long game_chat_id)
+        public Game GetGame(long game_chat_id) //ищет игру по id чата с пользователем, если не нашел - -1
         {
             using (Context context = new Context())
             {
@@ -85,10 +86,23 @@ namespace DBClasses
                 returngame = new Game(-1); //if not found returns -1
                 return returngame;
             }
-                
+
         }
 
-        public Location StartGame(long game_chat_id)
+        public void DeleteGames() //удаление всех игр и логов из бд при открытии приложения
+        {
+            using (Context context = new Context())
+            {
+                foreach (var game in context.Games)
+                {
+                    context.Entry(game).State = System.Data.Entity.EntityState.Deleted;
+                    context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public string StartGame(long game_chat_id) //начинает игру
+                                                     // ищет игру по chat.id в бд, создает для нее лог, сериализует его и записывает игру в бд
         {
             using (Context context = new Context())
             {
@@ -102,12 +116,13 @@ namespace DBClasses
                 string jsoned_log = JsonConvert.SerializeObject(new_log);
                 new_game.Log = jsoned_log;
                 AddGame(new_game);
-                return start_location;
+                return start_location.Description;
             }
         }
 
         public int CheckAnswer(long game_chat_id, string message_text)
         {
+            //проверка ответа на корректность: целый ли он, соответствует ли вообще списоку возможных ответов на текущей локации
             using (Context context = new Context())
             {
                 int users_answer;
@@ -128,6 +143,10 @@ namespace DBClasses
 
         public string AnswerRecieved(long game_chat_id, int new_answer_id, out List<string> buttons)
         {
+            //1 метод принятия ответа от пользователя
+            //ищет игру по ее chat.id, десериализует лог, записывает выбранный пользователем ответ, сериализует лог и фиксирует изменения в бд
+            //Ищет ответ по его Id, затем вызывает метод ChangeLocaton, из него - описание следующей локации и кноки
+            //возвращает описание локаций и кнопки
             using (Context context = new Context())
             {
                 string post_description = "";
@@ -138,27 +157,23 @@ namespace DBClasses
                 context.Entry(game).State = System.Data.Entity.EntityState.Modified;
                 context.SaveChanges();
                 buttons = new List<string>();
-                if (GetAnswer(new_answer_id).Description != "EndGame") // not endgame
+                context.Entry(game).State = System.Data.Entity.EntityState.Modified; //load to db
+                Answer chosed_answer = GetAnswer(new_answer_id);
+                post_description = ChangedLocation(game_chat_id, int.Parse(chosed_answer.PostDescrption), out buttons);
+                if (GetAnswer(new_answer_id).Description == "EndGame") // not endgame
                 {
-                    context.Entry(game).State = System.Data.Entity.EntityState.Modified; //load to db
-                    Answer chosed_answer = GetAnswer(new_answer_id);
-                    post_description = ChangedLocation(game_chat_id, int.Parse(chosed_answer.PostDescrption), out buttons);
-                    //context.Entry(game).State = System.Data.Entity.EntityState.Modified;
-                    //context.SaveChanges(); //ЗДЕСЬ ПРОПАДАЕТ!!
+                    post_description = "Thanks for playing. Wnat to restart?";
                 }
-                else //if endgame
-                {
-                    post_description = "Thanks for playing";
-                    context.Entry(game).State = System.Data.Entity.EntityState.Deleted;
-                    context.SaveChanges();
-                }
-                
                 return post_description;
             }
         }
 
         public string ChangedLocation(long game_chat_id, int new_location_id, out List<string> buttons_list)
         {
+            //2 метод обработки сообщений
+            //ищет игру, десериализует лог, добавляет в него новую запись с новой локацией, сериализует лог, фиксирует изменения
+            //вызывает метод Buttons
+            //возвращает описие новой локации и список кнопок
             using (Context context = new Context())
             {
                 string return_description = "";
@@ -173,21 +188,9 @@ namespace DBClasses
                 string new_location_name = context.Location.First(a => a.Id == new_location_id).Name;
                 var checkgame = context.Games.First(a => a.ChatId == game_chat_id);
                 buttons_list = new List<string>();
-                if (new_location_name != "EndGame") // EndGame is last location
-                {
-                    context.Entry(game).State = System.Data.Entity.EntityState.Modified;
-                    context.SaveChanges();
-                    
-                    buttons_list = ShowButtons(game_chat_id);//здесь проверку игры в контэксте
-                }
-                else
-                {
-                    context.Entry(game).State = System.Data.Entity.EntityState.Deleted; //deletes game from database when game ends
-                    context.SaveChanges();
-                    return_description = context.Location.First(a => a.Id == new_location_id).Description;
-                    return return_description;
-                }
-                
+                context.Entry(game).State = System.Data.Entity.EntityState.Modified;
+                context.SaveChanges();
+                buttons_list = ShowButtons(game_chat_id);//здесь проверку игры в контэксте
                 return_description = context.Location.First(a => a.Id == new_location_id).Description;
                 return return_description;
             }
@@ -195,13 +198,17 @@ namespace DBClasses
 
         public List<string> ShowButtons(long game_chat_id)
         {
+            //3 метод обработки сообщений
+            //ищет игру, десериализует лог, получает id последней локации
+            //получает id ответов для этой локации через десериализацию Ints
+            //итерируетс по всем ответам, добавляет в список их строковое представление (id. описание)
             using (Context context = new Context())
             {
                 Game checkgame1 = context.Games.First(aaa => aaa.ChatId == game_chat_id);
                 List<string> buttons = new List<string>();
                 var game = context.Games.First(a => a.ChatId == game_chat_id); //здесь лог БЕЗ ДОБАВЛЕНИЯ
                 List<Log> log = JsonConvert.DeserializeObject<List<Log>>(game.Log);
-                int check = log[log.Count()-1].Location_Id;
+                int check = log[log.Count() - 1].Location_Id;
                 Location current_loc = context.Location.First(a => a.Id == check);
                 var answers_ids = current_loc.Ints.Split(','); //здесь ошибка
                 Game checkgame2 = context.Games.First(aaa => aaa.ChatId == game_chat_id);
@@ -215,9 +222,9 @@ namespace DBClasses
             }
         }
 
-        
 
-       
-        
+
+
+
     }
 }
